@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Captura de CEP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #form-container {
+            max-width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[readonly] {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div id="form-container">
+    <h2>Formulário de Captura de CEP</h2>
+    <form id="cepForm">
+        <label for="cep">CEP:</label>
+        <input type="text" id="cep" placeholder="Digite o CEP" required>
+
+        <button type="button" onclick="buscarCEP()">Buscar CEP</button>
+
+        <label for="logradouro">Logradouro:</label>
+        <input type="text" id="logradouro" readonly>
+
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" readonly>
+
+        <label for="localidade">Localidade:</label>
+        <input type="text" id="localidade" readonly>
+
+        <label for="uf">UF:</label>
+        <input type="text" id="uf" readonly>
+    </form>
+</div>
+
+<script>
+    function buscarCEP() {
+        var cep = document.getElementById('cep').value.replace(/\D/g, '');
+
+        if (cep.length !== 8) {
+            alert('Digite um CEP válido');
+            return;
+        }
+
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+            .then(response => response.json())
+            .then(data => preencherFormulario(data))
+            .catch(error => console.error('Erro ao buscar CEP:', error));
+    }
+
+    function preencherFormulario(data) {
+        document.getElementById('logradouro').value = data.logradouro || '';
+        document.getElementById('bairro').value = data.bairro || '';
+        document.getElementById('localidade').value = data.localidade || '';
+        document.getElementById('uf').value = data.uf || '';
+    }
+</script>
+
+</body>
+</html>
